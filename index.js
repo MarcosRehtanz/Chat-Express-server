@@ -10,6 +10,12 @@ const app = express()
 const port = process.env.PORT ?? 3000
 const server = createServer(app)
 const io = new Server(server, {
+  connectionStateRecovery: {
+    // the backup duration of the sessions and the packets
+    maxDisconnectionDuration: 2 * 60 * 1000,
+    // whether to skip middlewares upon successful recovery
+    skipMiddlewares: true,
+  },
   cors: {
     origin: '*'
   }
@@ -21,8 +27,9 @@ io.on('connection', (socket) => {
 
   socket.on('message', (msg) => {
     console.log('message: ' + JSON.stringify(msg));
+    io.emit('chat', msg)
   });
-  socket.on('hi', (msg) => {
+  socket.on('hi', () => {
     console.log(`Hello, user ${socket.id}! How are you?`);
   });
 
