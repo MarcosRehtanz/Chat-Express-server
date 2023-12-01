@@ -1,14 +1,11 @@
-import express from 'express'
 import cors from 'cors'
 import logger from 'morgan'
 import 'dotenv/config'
-
+import { ws } from './web_socket/web_socket.js'
+import { server, app } from './server/server.js'
 import { Server } from 'socket.io'
-import { createServer } from 'node:http'
 
-const app = express()
 const port = process.env.PORT ?? 3000
-const server = createServer(app)
 const io = new Server(server, {
   connectionStateRecovery: {
     // the backup duration of the sessions and the packets
@@ -21,22 +18,8 @@ const io = new Server(server, {
   }
 })
 
-io.on('connection', (socket) => {
+ws(io)
 
-  console.log(`User ${socket.id} has connect`);
-
-  socket.on('message', (msg) => {
-    console.log('message: ' + JSON.stringify(msg));
-    io.emit('chat', msg)
-  });
-  socket.on('hi', () => {
-    console.log(`Hello, user ${socket.id}! How are you?`);
-  });
-
-  socket.on('disconnect', ()=>{
-    console.log(`User ${socket.id} has disconnect`);
-  })
-});
 
 const config = {
   origin: "*",

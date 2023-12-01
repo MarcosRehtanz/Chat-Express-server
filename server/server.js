@@ -1,9 +1,5 @@
 import express from 'express'
+import { createServer } from 'node:http'
 
-const router = express.Router()
-
-router.get('/', (req, res) => {
-    res.sendFile(process.cwd() + '/client/index.html')
-})
-
-export default router
+export const app = express()
+export const server = createServer(app)
