@@ -8,6 +8,7 @@ export const ws = (io) => {
 
         console.log(`User ${socket.id} has connect`);
 
+        socket.connectToRoom()
         socket.on('message', 'chat')
         socket.disconect()
         socket.hi()
